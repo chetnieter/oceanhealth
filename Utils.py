@@ -42,6 +42,45 @@ def getMinorMajorRatio(image):
         ratio = 0.0 if maxregion is None else  maxregion.minor_axis_length*1.0 / maxregion.major_axis_length
     return ratio
 
+def getAreaRatio(image):
+    image = image.copy()
+    # Create the thresholded image to eliminate some of the background
+    imagethr = np.where(image > np.mean(image),0.,1.0)
+
+    #Dilate the image
+    imdilated = morphology.dilation(imagethr, np.ones((4,4)))
+
+    # Create the label list
+    label_list = measure.label(imdilated)
+    label_list = imagethr*label_list
+    label_list = label_list.astype(int)
+    
+    region_list = measure.regionprops(label_list)
+    maxregion = getLargestRegion(region_list, label_list, imagethr)
+
+    area = 0.0 if maxregion is None else  maxregion.area/image.size
+    return area
+
+def getPerimeter(image):
+    image = image.copy()
+    # Create the thresholded image to eliminate some of the background
+    imagethr = np.where(image > np.mean(image),0.,1.0)
+
+    #Dilate the image
+    imdilated = morphology.dilation(imagethr, np.ones((4,4)))
+
+    # Create the label list
+    label_list = measure.label(imdilated)
+    label_list = imagethr*label_list
+    label_list = label_list.astype(int)
+    
+    region_list = measure.regionprops(label_list)
+    maxregion = getLargestRegion(region_list, label_list, imagethr)
+
+    fullPerm = 2.*(image.shape[0] + image.shape[1])
+    perm = 0.0 if maxregion is None else  maxregion.area/fullPerm
+    return perm
+
 def TestSeparation(y,X,classNames):
 # Loop through the classes two at a time and compare their distributions of the Width/Length Ratio
 
@@ -72,3 +111,29 @@ def TestSeparation(y,X,classNames):
         plt.xlabel("Width/Length Ratio")
 
     plt.show()
+
+def multiclassLogLoss(y_true, y_pred, eps=1e-15):
+    """Multi class version of Logarithmic Loss metric.
+    https://www.kaggle.com/wiki/MultiClassLogLoss
+
+    Parameters
+    ----------
+    y_true : array, shape = [n_samples]
+            true class, intergers in [0, n_classes - 1)
+    y_pred : array, shape = [n_samples, n_classes]
+
+    Returns
+    -------
+    loss : float
+    """
+    predictions = np.clip(y_pred, eps, 1 - eps)
+
+    # normalize row sums to 1
+    predictions /= predictions.sum(axis=1)[:, np.newaxis]
+
+    actual = np.zeros(y_pred.shape)
+    n_samples = actual.shape[0]
+    actual[np.arange(n_samples), y_true.astype(int)] = 1
+    vectsum = np.sum(actual * np.log(predictions))
+    loss = -1.0 / n_samples * vectsum
+    return loss
