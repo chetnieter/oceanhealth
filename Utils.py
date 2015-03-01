@@ -78,7 +78,7 @@ def getPerimeter(image):
     maxregion = getLargestRegion(region_list, label_list, imagethr)
 
     fullPerm = 2.*(image.shape[0] + image.shape[1])
-    perm = 0.0 if maxregion is None else  maxregion.area/image.
+    perm = 0.0 if maxregion is None else  maxregion.perimeter/fullPerm
     return perm
 
 def TestSeparation(y,X,classNames):
