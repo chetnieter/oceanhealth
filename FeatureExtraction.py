@@ -87,7 +87,7 @@ def getEulerNumFromImage(image):
     return getEulerNumFromRegion(region)
 
 def getFilledAreaFromRegion(region, image):
-    area = 0.0 if region is None else region.filled_area/image.size
+    area = 0.0 if region is None else region.filled_area/region.area
     return area
 
 def getFilledAreaFromImage(image):
@@ -96,7 +96,7 @@ def getFilledAreaFromImage(image):
     return getFilledAreaFromRegion(region, image)
 
 def getConvexHullAreaFromRegion(region, image):
-    area = 0.0 if region is None else region.convex_area/image.size
+    area = 0.0 if region is None else region.convex_area/region.area
     return area
 
 
