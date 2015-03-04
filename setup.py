@@ -29,8 +29,6 @@ import FeatureExtraction as FE
 pathToData = "..\data"
 
 # get the classnames from the directory structure
-# directory_names = list(set(glob.glob(os.path.join(pathToData,"train", "*")) \
-#  ).difference(set(glob.glob(os.path.join(pathToData,"train","*.*")))))
 directory_names = glob.glob(os.path.join(pathToData,"train", "*"))
 
 # Rescale the images and create the combined metrics and training labels
