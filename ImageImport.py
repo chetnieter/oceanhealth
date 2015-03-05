@@ -92,6 +92,38 @@ def LoadTrainingData():
 
     return namesClasses, y, X
 
+def LoadTestData():
+
+    file_names = glob.glob(os.path.join(pathToData,"test", "*.jpg"))
+
+    num_rows = len(file_names[:1000])
+
+    # X is the feature vector with one row of features per image
+    # consisting of the pixel values and our metric
+    X = np.zeros((num_rows, num_features), dtype=float)
+
+    namesFiles = list()
+
+    # get the total test images
+    numberofImages = 0
+    for i, fileName in enumerate(file_names[:1000]):
+        # only count image files
+        if fileName[-4:] != ".jpg":
+            continue
+
+        nameFileImage = fileName.split(os.pathsep)[-1]
+        image = imread(fileName, as_grey=True)
+        namesFiles.append(nameFileImage)
+
+        X[i,:] = getFeatures(image)
+
+        # report progress for each 5% done  
+        report = [int((j+1)*num_rows/20.) for j in range(20)]
+        if i in report: print np.ceil(i *100.0 / num_rows), "% done"
+
+    return namesFiles, X
+
+
 def getFeatures(image):
 
     maxRegion = FE.getMaxRegion(image)
@@ -102,7 +134,7 @@ def getFeatures(image):
     convexhull = FE.getConvexHullAreaFromRegion(maxRegion, image)
     eulernum = FE.getEulerNumFromRegion(maxRegion)
     image = resize(image, (maxPixel, maxPixel))
-    
+
     featVec = np.zeros((1,num_features),dtype=float)
 
     # Store the rescaled image pixels and the axis ratio
@@ -113,3 +145,5 @@ def getFeatures(image):
     featVec[0, imageSize+3] = filledarea
     featVec[0, imageSize+4] = convexhull
     featVec[0, imageSize+5] = eulernum
+
+    return featVec
