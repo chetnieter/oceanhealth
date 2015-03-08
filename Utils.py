@@ -6,6 +6,7 @@ from skimage import measure
 import pandas as pd
 from matplotlib import pyplot as plt
 import os
+import csv
 
 # find the largest nonzero region
 def getLargestRegion(props, labelmap, imagethres):
@@ -137,3 +138,22 @@ def multiclassLogLoss(y_true, y_pred, eps=1e-15):
     vectsum = np.sum(actual * np.log(predictions))
     loss = -1.0 / n_samples * vectsum
     return loss
+
+def WriteSubmission(subFile, imageNames, classNames, y):
+    f = open(subFile, 'wb')
+    csvWriter = csv.writer(f)
+
+    # First write out class names
+    firstRow = ['image']
+    for classPath in classNames:
+        name = classPath.split(os.sep)[-1]
+        firstRow.append(name)
+    csvWriter.writerow(firstRow)
+
+    # Now write each row
+    for i, el in enumerate(y):
+        row = [imageNames[i].split(os.sep)[-1]]
+        row.extend(el)
+        csvWriter.writerow(row)
+
+    f.close()
