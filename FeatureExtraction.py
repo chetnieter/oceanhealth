@@ -99,4 +99,18 @@ def getConvexHullAreaFromRegion(region, image):
     area = 0.0 if region is None else region.convex_area/region.area
     return area
 
+def getHuMomentFromRegion(region):
+    huVec = (0.,0.,0.,0.,0.,0.,0.) if region is None else region.moments_hu 
+    return huVec
 
+def  getSolidityFromRegion(region):
+    solidity = 0. if region is None else region.solidity
+    return solidity
+
+def getEccentricityFromRegion(region):
+    eccentricity = 0. if region is None else region.eccentricity
+    return eccentricity
+
+def getInertiaEigenFromRegion(region):
+    eigen = (0.,0.) if region is None else region.inertia_tensor_eigvals
+    return eigen

@@ -34,7 +34,7 @@ directory_names = glob.glob(os.path.join(pathToData,"train", "*"))
 # We'll rescale the images to be 25x25
 maxPixel = 25
 imageSize = maxPixel * maxPixel
-num_features = imageSize + 6
+num_features = imageSize + 17
 
 # Rescale the images and create the combined metrics and training labels
 def LoadTrainingData():
@@ -133,6 +133,10 @@ def getFeatures(image):
     filledarea = FE.getFilledAreaFromRegion(maxRegion, image)
     convexhull = FE.getConvexHullAreaFromRegion(maxRegion, image)
     eulernum = FE.getEulerNumFromRegion(maxRegion)
+    solidity = FE.getSolidityFromRegion(maxRegion)
+    eccentricity = FE.getEccentricityFromRegion(maxRegion)
+    humoments = FE.getHuMomentFromRegion(maxRegion)
+    eigen = FE.getInertiaEigenFromRegion(maxRegion)
     image = resize(image, (maxPixel, maxPixel))
 
     featVec = np.zeros((1,num_features),dtype=float)
@@ -145,5 +149,9 @@ def getFeatures(image):
     featVec[0, imageSize+3] = filledarea
     featVec[0, imageSize+4] = convexhull
     featVec[0, imageSize+5] = eulernum
+    featVec[0, imageSize+6] = solidity
+    featVec[0, imageSize+7] = eccentricity
+    featVec[0, imageSize+8:imageSize+15] = humoments
+    featVec[0, imageSize+15:imageSize+17] = eigen
 
     return featVec
