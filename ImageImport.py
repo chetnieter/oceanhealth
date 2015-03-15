@@ -92,11 +92,11 @@ def LoadTrainingData():
 
     return namesClasses, y, X
 
-def LoadTestData():
+def LoadTestData(endIdx=None):
 
     file_names = glob.glob(os.path.join(pathToData,"test", "*.jpg"))
 
-    num_rows = len(file_names[:1000])
+    num_rows = len(file_names[:endIdx])
 
     # X is the feature vector with one row of features per image
     # consisting of the pixel values and our metric
@@ -106,7 +106,7 @@ def LoadTestData():
 
     # get the total test images
     numberofImages = 0
-    for i, fileName in enumerate(file_names[:1000]):
+    for i, fileName in enumerate(file_names[:endIdx]):
         # only count image files
         if fileName[-4:] != ".jpg":
             continue
